@@ -1,0 +1,442 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Annuaire M1IF13</title>
+    <link href="/style/style.css" rel="stylesheet"/>
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="style/bootstrap-tagsinput.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/style/print.css" type="text/css" media="print" />
+    <link href="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet">
+    <script src="/jquery/jquery.js"></script>
+    <link rel="stylesheet" href="/bootstrap-css/bootstrap.min.css">
+    <script src="/bootstrap-js/bootstrap.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <img src="images/image_annuaire.png" alt="image annuaire"/>
+        <h2>Un simple annuaire de sites Web</h2>
+
+    </div>
+</div>
+<div class="menu">
+    <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active nav">
+                    <a id="accueil-view" href="#/" data-target="">
+                        <i class="fa fa-home" aria-hidden="true"></i>
+                        Home
+                    </a>
+                </li>
+                <li class="nav nav-item">
+                    <a id="client-view" href="#/client" data-target="#client">
+                        <i class="fa fa-desktop" aria-hidden="true"></i>
+                        Côte Client
+                    </a>
+
+                </li>
+
+                <li class="nav-item nav">
+                    <a id="server-view" href="#/server" data-target="#server">
+                        <i class="fa fa-server" aria-hidden="true"></i>
+                        Côte Serveur
+                    </a>
+                </li>
+                <li class="nav-item nav">
+                    <a id="tag-view" href="#/tag" data-target="#tag">
+                        <i class="fa fa-tag" aria-hidden="true"></i>
+                        Par tag
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
+<div class="body_site">
+    <div class="container">
+        <div class="error-section"></div>
+        <section class="content-home">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <form>
+                            <div class="input-group medium">
+                                <label id="user-name-label" class="for_labels" style="width: auto;"></label>
+                                <div class="user-info">
+                                    <label class="for_labels user-data medium">Entre votre nom:</label>
+
+                                    <span class="input-group-addon user-data" id="basic-addon7">
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                    </span>
+
+                                    <input autofocus="autofocus" id="username" type="text"
+                                           class="form-control medium user-data" style="width: 70% !important; " >
+                                    <div class="btn_footer">
+                                        <button type="button" class="btn login-btn user-data">
+                                            <label>Login</label>
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                        </button>
+
+                                        <button type="button" class="btn logout-btn">
+                                            <label>Logout</label>
+                                            <i class="fa fa-check" aria-hidden="true"></i>
+                                        </button>
+
+                                        <button type="button" class="btn clean-btn">
+                                            <label>Effacer storage</label>
+                                            <i class="fa fa-eraser" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+
+                                    <label id="last_modification" class="medium rigth">Dernière modification: </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group medium">
+
+                        <h4 id="activity_history" class="hidden">Dernières activités</h4>
+
+                        <div class="history">
+                            <script type="text/template" id="home-history-template">
+                                <% _.each(history, function(action) { %>
+                                <a class="list-group-item">
+                                    <h5 class="list-group-item-heading"><%= action.action %></h5>
+                                    <p class="list-group-item-text">Date: <%= action.date %></p>
+                                </a>
+                                <%}) %>
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group medium">
+
+                        <h4 id="last_bookmarks" class="hidden">Dernières bookmarks ajoutés</h4>
+
+                        <div class="bookmarks list-group">
+                            <ul class="list-group">
+                                <script type="text/template" id="home-bookmarks-template">
+                                    <% _.each(bookmarks, function(bookmark) { %>
+                                    <li class="list-group-item">
+                                        <h5 class="list-group-item-heading">Bookmark côté <%= bookmark.cote %></h5>
+
+                                        <p class="list-group-item-text">Nom: <%= bookmark.title %>: <%= bookmark.url %></p>
+                                        <p class="list-group-item-text">
+                                            Tags:
+
+                                            <% _.each(bookmark.tags.split(','), function(tag) { %>
+                                            <a href="#/tag/<%=tag.trim()%>" class="tag"><%=tag%></a>
+                                            <%}) %>
+                                        </p>
+                                    </li>
+                                    <%}) %>
+                                </script>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="content-server">
+            <!-- Server Modal -->
+            <div class="modal fade" id="serverModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Formulaire coté serveur</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form id="form-server">
+                                <div class="input-group">
+                                    <label class="for_labels"> Nom : </label>
+                                    <span class="input-group-addon" id="basic-addon1">@</span>
+                                    <input type="text" id="key-server" autofocus class="form-control"
+                                           placeholder="Entrer le nom"
+                                           aria-describedby="basic-addon1"/><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label class="for_labels"> URL : </label>
+                                    <span class="input-group-addon" id="basic-addon2"><i class="fa fa-link"
+                                                                                         aria-hidden="true"></i></span>
+                                    <input type="text" id="value-server" class="form-control"
+                                           placeholder="Entrer l'URL"
+                                           aria-describedby="basic-addon2"/><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label class="for_labels"> Tags : </label>
+                                    <span class="input-group-addon" id="basic-addon3"><i class="fa fa-tags"
+                                                                                         aria-hidden="true"></i></span>
+                                    <input type="text" id="tags-server"
+                                           placeholder="Entrer des tags en les séparant par un clique sur entrer"
+                                           data-role="tagsinput"
+                                           class="form-control" aria-describedby="basic-addon3"/>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i
+                                            class="fa fa-times"
+                                            aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" id="addPair-server" class="btn btn-success btn-sm add-site">
+                                        <icon class="glyphicon glyphicon-ok"></icon>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Cliquer sur le bouton pour ajouter un site web à l'annuaire : coté serveur</h4>
+
+                    <button type="button" class="btn plus_btn" data-toggle="modal" data-target="#serverModal">
+                        <label>Ajouter un site</label>
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="pairs-server" class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <td>Nom</td>
+                            <td>URL</td>
+                            <td>Tags</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody id="table-body-server">
+                        <script type="text/template" id="server-template">
+                            <tr>
+                                <td><%= title %></td>
+                                <td><%= url %></td>
+                                <td>
+                                    <% _.each(tags.split(','), function(tag) { %>
+                                    <a href="#/tag/<%=tag%>"><%=tag%></a>
+                                    <%}) %>
+                                </td>
+                                <td class="delete_btn">
+                                    <button type="button" data-title="<%= title%>" data-url="<%= url%>"
+                                            class="btn btn-danger btn-sm remove-site">
+                                        <icon class="glyphicon glyphicon-remove"></icon>
+                                        supprimer
+                                    </button>
+                                </td>
+                            </tr>
+                        </script>
+                        </tbody>
+                    </table>
+                    <form>
+                        <button id="impression_serveur" name="impression" type="button"   class ="btn plus_btn">
+                            Imprimer cette liste <i class="fa fa-print" aria-hidden="true"></i>
+                        </button>
+                        <div  class='alert alert-danger message' role='alert'></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Client Modal -->
+        <section class="content-client">
+            <div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel1">Formulaire coté client </h4>
+                        </div>
+                        <div class="modal-body">
+                            <form id="form-client">
+                                <div class="input-group">
+                                    <label class="for_labels"> Nom : </label>
+                                    <span class="input-group-addon" id="basic-addon4">@</span>
+                                    <input type="text" id="key-client" autofocus class="form-control"
+                                           placeholder="Entrer le nom" value=""
+                                           aria-describedby="basic-addon4"/><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label class="for_labels"> URL : </label>
+                                    <span class="input-group-addon" id="basic-addon5"><i class="fa fa-link"
+                                                                                         aria-hidden="true"></i></span>
+                                    <input type="text" id="value-client" class="form-control" placeholder="Entrer l'URL"
+                                           aria-describedby="basic-addon5" value=""/><br/>
+                                </div>
+                                <div class="input-group">
+                                    <label class="for_labels"> Tags : </label>
+                                    <span class="input-group-addon" id="basic-addon6"><i class="fa fa-tags"
+                                                                                         aria-hidden="true"></i></span>
+                                    <input type="text" id="tags-client" value=""
+                                           placeholder="Entrer des tags en les séparant par un clique sur entrer"
+                                           data-role="tagsinput" class="form-control" aria-describedby="basic-addon6"/>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i
+                                            class="fa fa-times" aria-hidden="true"></i></button>
+                                    <button type="button" class="btn btn-success btn-sm add-site">
+                                        <icon class="glyphicon glyphicon-ok"></icon>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h4>Cliquer sur le bouton pour ajouter un site web à l'annuaire : coté client</h4>
+                    <button type="button" class="btn plus_btn" data-toggle="modal" data-target="#clientModal">
+                        <label>Ajouter un site</label>
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <td>Nom</td>
+                            <td>URL</td>
+                            <td>Tags</td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody id="table-body-client">
+                        <script type="text/template" id="client-template">
+                            <tr>
+                                <td><%= title %></td>
+                                <td><%= url %></td>
+                                <td>
+                                    <% _.each(tags.split(','), function(tag) { %>
+                                    <a href="#/tag/<%=tag%>"><%=tag%></a>
+                                    <%}) %>
+                                </td>
+                                <td class="delete_btn">
+                                    <button type="button" data-title="<%= title%>" data-url="<%= url%>"
+                                            class="btn btn-danger btn-sm remove-site">
+                                        <icon class="glyphicon glyphicon-remove"></icon>
+                                        supprimer
+                                    </button>
+                                </td>
+                            </tr>
+                        </script>
+                        </tbody>
+                    </table>
+                    <form>
+                          <input id="impression_client" name="impression" type="button"  class="btn plus_btn" value="Imprimer cette page" />
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal de Tags-->
+        <section class="content-tags">
+            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel2">Formulaire rechercher tag </h4>
+                            <form id="form-tag">
+                                <div class="input-group">
+                                    <select id="tag-search" type="text" class="form-control"
+                                            placeholder="Entrer le tag">
+                                        <option value=""></option>
+                                        <script id="tags-list" type="text/template">
+                                            <option value="<%= tag %>"><%= tag %></option>
+                                        </script>
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-danger" data-dismiss="modal"><i
+                                            class="fa fa-times" aria-hidden="true"></i></button>
+                                    <button type="button" class="btn btn-success btn-sm search-button">
+                                        <icon class="glyphicon glyphicon-ok"></icon>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <form>
+                            <h4>Cliquer sur le bouton pour rechercher un tag</h4>
+                            <div class="input-group medium">
+                                <button type="button" class="btn search-btn searchbtn" data-toggle="modal"
+                                        data-target="#myModal2">
+                                    <label>Chercher</label>
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <td>Nom</td>
+                            <td>URL</td>
+                            <td>Tags</td>
+                        </tr>
+                        </thead>
+                        <tbody id="table-body-tags">
+                        <script type="text/template" id="tags-template">
+                            <tr>
+                                <td><%= title %></td>
+                                <td><%= url %></td>
+                                <td>
+                                    <% _.each(tags.split(','), function(tag) { %>
+                                    <a href="#/tag/<%=tag.trim()%>"><%=tag%></a>
+                                    <%}) %>
+                                </td>
+                            </tr>
+                        </script>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- Scripts ressources externes -->
+<script src="http://underscorejs.org/underscore-min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.string/2.3.3/underscore.string.min.js"></script>
+<script src="http://backbonejs.org/backbone-min.js"></script>
+<script src="style/bootstrap-tagsinput.min.js"></script>
+
+<!-- Scripts ressources internes - backbone -->
+<script src="model/modele.js"></script>
+<script src="collection/collection.js"></script>
+<script src="view/views.js"></script>
+<script src="router/router.js"></script>
+<script src="storage/storage.js"></script>
+
+</body>
+</html>
